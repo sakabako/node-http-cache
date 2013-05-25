@@ -22,9 +22,9 @@ exports.createServer = function( callback, requestConfigCallback ) {
 		var key = config.key;
 		
 		if (inProgress[key]) {
-			return;
+			return inProgress[key];
 		}
-		inProgress[key] = cacheObject;
+		inProgress[key] = new CachedResponse();
 
 		cacheObject.on('end', function() {
 			complete[key] = cacheObject;
@@ -38,13 +38,14 @@ exports.createServer = function( callback, requestConfigCallback ) {
 
 			if (config.keepGenerated) {
 				setTimeout(function() {
-					var newCache = new CachedResponse();
-					populateCache( req, newCache, config );
+					populateCache( req, config );
 				}, config.minAge);
 			}
 		});
 		
 		callback( req, cacheObject );
+
+		return inProgress[key];
 	}
 	
 	return http.createServer(function (req, res) {
@@ -61,10 +62,9 @@ exports.createServer = function( callback, requestConfigCallback ) {
 			inProgress[key].pipe(res);
 
 		} else {
-			var cached = new CachedResponse();
+			var cached = populateCache( req, config );
 			cached.pipe(res);
-
-			populateCache( req, cached, config);
+			
 		}
 		
 	});
