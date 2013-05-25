@@ -37,16 +37,14 @@ CachedResponse.prototype.pipe = function( response ) {
 };
 CachedResponse.prototype.end = function() {
 	var args = arguments;
-	this._queue.push({
-		'method': 'end',
-		'args': args
-	});
+
+	this._queue.push( new QueueItem('end', args) );
 	this._watchers.forEach(function( watcher ) {
 		watcher.end.apply(watcher, args);
 	});
 	this._watchers.length = 0;
+	
 	this._ended = true;
-
 	this.emit('end');
 };
 
