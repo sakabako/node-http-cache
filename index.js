@@ -1,24 +1,28 @@
 var http = require('./http');
 
 function configCallback( request, config ) {
-	config.keepGenerated = true;
+	config.key = parseInt( request.url.substring(1), 10 ) || 10;
+	config.maxAge = 5000; // ms
+	// config.minAge === 0; // ms
+	// config.keepGenerated === false;
 }
 
-http.createServer(function (req, res) {
-
-	var max = parseInt( req.url.substring(1), 10 );
+function requestCallback( req, res ) {
 
 	res.writeHead(200, {'Content-Type': 'text/plain'});
-	var times = 1;
+	
+	var max = parseInt( req.url.substring(1), 10 ) || 10;
+	var counter = 1;
+	
 	var interval = setInterval(function() {
-		res.write(times+'\n');
-		if (times === max) {
+		res.write(counter+'\n');
+		if (counter === max) {
 			res.end('done\n');
 			clearInterval( interval );
 		}
-		times++;
+		counter++;
 	}, 1000);
+	
+}
 
-	res.write(new Date().toUTCString()+'\n');
-
-}, configCallback ).listen(8000);
+http.createServer( requestCallback, configCallback ).listen(8000);
