@@ -1,0 +1,25 @@
+{
+	"name": "node-http-cache",
+	"version": "0.0.1",
+	"author": "Stu Kabakoff <sakabako@gmail.com>",
+	"description": "An http cache.",
+	"contributors": [{
+			"name": "Stu Kabakoff",
+			"email": "sakabako@gmail.com"
+		}
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sakabako/node-http-cache"
+	},
+	"keywords": [
+			"http",
+			"cache"
+	],
+	"dependencies": {
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">=0.6"
+	}
+}
