@@ -11,8 +11,8 @@ It works just like a normal node http server except it takes a configCallback.
 ```javascript
 var http = require('node-cache/http');
 
-function configCallback( request, config ) {
-	// config.key === request.url;
+function configCallback( req, config ) {
+	// config.key === req.url;
 	// config.maxAge === 0; // ms
 	// config.minAge === 0; // ms
 	// config.keepGenerated === false;
@@ -21,21 +21,21 @@ function configCallback( request, config ) {
 function requestCallback( req, res ) {
 
 	res.writeHead(200, {'Content-Type': 'text/plain'});
-	
+		
+	// Count up to max, printing numbers on a new line one second apart.
 	var max = parseInt( req.url.substring(1), 10 ) || 10;
 	var counter = 1;
-	
 	var interval = setInterval(function() {
 		res.write(counter+'\n');
+		
 		if (counter === max) {
-			res.end('done\n');
 			clearInterval( interval );
+			res.end('done\n');
 		}
 		counter++;
+
 	}, 1000);
 	
-	res.end();
-
 }
 
 http.createServer( requestCallback, configCallback ).listen(8000);
