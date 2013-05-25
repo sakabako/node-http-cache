@@ -9,7 +9,7 @@ function RequestConfig( request ) {
 
 	this.keepGenerated = false;
 	this.minAge = 0;
-	this.maxAge = 5000;
+	this.maxAge = 0;
 
 }
 

@@ -13,17 +13,16 @@ var http = require('node-cache/http');
 
 function configCallback( request, config ) {
 	// config.key === request.url;
-	// config.maxAge === 5000;
-	// config.minAge === 0;
+	// config.maxAge === 0; // ms
+	// config.minAge === 0; // ms
 	// config.keepGenerated === false;
 }
 
 function requestCallback( req, res ) {
 
-	var max = parseInt( req.url.substring(1), 10 );
-
 	res.writeHead(200, {'Content-Type': 'text/plain'});
-	res.write(new Date().toUTCString()+'\n');
+	res.write('hello world');
+	res.end();
 
 }
 
