@@ -3,38 +3,70 @@ var http = require('http');
 
 var caches = {};
 
-function defaultHashingFunction( req ) {
-	return req.url;
+function RequestConfig( request ) {
+	
+	this.key = request.url;
+
+	this.keepGenerated = false;
+	this.minAge = 0;
+	this.maxAge = 5000;
+
 }
-function defaultCacheDurationFunction( req, responseTime ) {
-	return 0;
-}
 
-exports.createServer = function( callback, hashingFunction, cacheDurationFunction ) {
+exports.createServer = function( callback, requestConfigCallback ) {
 
-	hashingFunction = hashingFunction || defaultHashingFunction;
-	cacheDurationFunction = cacheDurationFunction || defaultCacheDurationFunction;
+	var complete = {};
+	var inProgress = {};
 
-	var caches = {};
+	function populateCache( req, cacheObject, config ) {
+		var key = config.key;
+		
+		if (inProgress[key]) {
+			return;
+		}
+		inProgress[key] = cacheObject;
+
+		cacheObject.on('end', function() {
+			complete[key] = cacheObject;
+			delete inProgress[key];
+
+			setTimeout(function() {
+				if (complete[key] === cacheObject) {
+					delete complete[key];
+				}
+			}, config.maxAge );
+
+			if (config.keepGenerated) {
+				setTimeout(function() {
+					var newCache = new CachedResponse();
+					populateCache( req, newCache, config );
+				}, config.minAge);
+			}
+		});
+		
+		callback( req, cacheObject );
+	}
 	
 	return http.createServer(function (req, res) {
-		var hash = hashingFunction( req );
 		
-		if (caches[hash]) {
-			caches[hash].pipe(res);
-			return;
+		var config = new RequestConfig( req );
+		requestConfigCallback( req, config );
+
+		var key = config.key;
+		
+		if (complete[key]) {
+			complete[key].pipe(res);
+
+		} else if (inProgress[key]) {
+			inProgress[key].pipe(res);
+
 		} else {
-			var startTime = new Date();
-			caches[hash] = new CachedResponse();
-			caches[hash].pipe(res);
-			caches[hash].on('end', function() {
-				var responseTime = new Date() - startTime;
-				setTimeout(function() {
-					delete caches[hash];
-				}, cacheDurationFunction(req, responseTime) );
-			});
+			var cached = new CachedResponse();
+			cached.pipe(res);
+
+			populateCache( req, cached, config);
 		}
-		callback( req, caches[hash] );
+		
 	});
 
 };

@@ -1,16 +1,12 @@
 var http = require('./http');
 
-function hashingFunction( req ) {
-	return parseInt(req.url.substr(1), 10) || 20;
-}
-
-function cacheDurationFunction( req ) {
-	return 15000;
+function configCallback( request, config ) {
+	config.keepGenerated = true;
 }
 
 http.createServer(function (req, res) {
 
-	var max = hashingFunction( req );
+	var max = parseInt( req.url.substring(1), 10 );
 
 	res.writeHead(200, {'Content-Type': 'text/plain'});
 	var times = 1;
@@ -25,4 +21,4 @@ http.createServer(function (req, res) {
 
 	res.write(new Date().toUTCString()+'\n');
 
-}, hashingFunction, cacheDurationFunction).listen(8000);
+}, configCallback ).listen(8000);
