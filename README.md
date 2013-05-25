@@ -1,8 +1,8 @@
-# node-cache
+# node-http-cache
 
-This is a simple in-memory http cache meant for very high traffic websites. The difference between this cache and others is that the cache starts when the request is made. If two clients request the same page at the same time it will only be generated once.
+This is a simple in-memory http cache, it is meant to solve the problem of two simultaneous requests to the same resource. If two requests come in while a resource is being generated it will only be generated once and sent to all connected clients.
 
-Right now only `http` is implemented but `fs` is planned.
+The only cache mechanism is currently simple in memory.
 
 ## Basic Usage
 
