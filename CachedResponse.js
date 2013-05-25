@@ -1,6 +1,11 @@
 var util = require("util");
 var events = require("events");
 
+function QueueItem( methodName, args ) {
+	this.method = methodName;
+	this.args = args;
+}
+
 function CachedResponse( original ) {
 	this._queue = [];
 	this._watchers = [];
@@ -15,10 +20,7 @@ util.inherits(CachedResponse, events.EventEmitter);
 ['writeHead','setTimeout','setHeader','getHeader','removeHeader','write','addTrailers'].forEach(function(key) {
 	CachedResponse.prototype[key] = function() {
 		var args = arguments;
-		this._queue.push({
-			'method': key,
-			'args': args
-		});
+		this._queue.push(new QueueItem(key, args));
 		this._watchers.forEach(function( watcher ) {
 			watcher[key].apply(watcher, args);
 		});
