@@ -1,5 +1,5 @@
 {
-	"name": "node-http-cache",
+	"name": "node-debounced-io",
 	"version": "0.0.1",
 	"author": "Stu Kabakoff <sakabako@gmail.com>",
 	"description": "An http cache.",
@@ -10,7 +10,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/sakabako/node-http-cache"
+		"url": "https://github.com/sakabako/node-debounced-io"
 	},
 	"keywords": [
 			"http",
