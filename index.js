@@ -3,8 +3,8 @@ var http = require('./http');
 function configCallback( request, config ) {
 	config.key = parseInt( request.url.substring(1), 10 ) || 10;
 	config.maxAge = 5000; // ms
-	// config.minAge === 0; // ms
-	// config.keepGenerated === false;
+	config.minAge = 0; // ms
+	config.keepGenerated = true;
 }
 
 function requestCallback( req, res ) {

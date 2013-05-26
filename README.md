@@ -1,8 +1,6 @@
-# node-http-cache
+# node-http-debounce
 
 This is a simple in-memory http cache, it is meant to solve the problem of two simultaneous requests to the same resource. If two requests come in while a resource is being generated it will only be generated once and sent to all connected clients.
-
-The only cache mechanism is currently simple in memory.
 
 ## Basic Usage
 

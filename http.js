@@ -18,13 +18,13 @@ exports.createServer = function( callback, requestConfigCallback ) {
 	var complete = {};
 	var inProgress = {};
 
-	function populateCache( req, cacheObject, config ) {
+	function populateCache( req, config ) {
 		var key = config.key;
 		
 		if (inProgress[key]) {
 			return inProgress[key];
 		}
-		inProgress[key] = new CachedResponse();
+		var cacheObject = inProgress[key] = new CachedResponse();
 
 		cacheObject.on('end', function() {
 			complete[key] = cacheObject;
@@ -45,7 +45,7 @@ exports.createServer = function( callback, requestConfigCallback ) {
 		
 		callback( req, cacheObject );
 
-		return inProgress[key];
+		return cacheObject;
 	}
 	
 	return http.createServer(function (req, res) {
