@@ -1,13 +1,13 @@
-# node-http-debounce
+# node-debounced-io
 
-This is a simple in-memory http cache, it is meant to solve the problem of two simultaneous requests to the same resource. If two requests come in while a resource is being generated it will only be generated once and sent to all connected clients.
+Some io operations are guaranteed to return the same result. Having more than one of these in progress at any one time serves no purpose. This allows you to create an http server that will cache the result of a request until the request finishes, or for a set time period.
 
 ## Basic Usage
 
 It works just like a normal node http server except it takes a configCallback.
 
 ```javascript
-var http = require('node-cache/http');
+var http = require('node-debounced-io/http');
 
 function configCallback( req, config ) {
 	// config.key === req.url;
