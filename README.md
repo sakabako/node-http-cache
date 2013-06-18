@@ -4,7 +4,7 @@ Some io operations are guaranteed to return the same result. Having more than on
 
 ## Basic Usage
 
-It works just like a normal node http server except it takes a configCallback.
+It works just like a normal node http server except you create it with a config callback in addition to a request callback.
 
 ```javascript
 var http = require('node-debounced-io/http');
@@ -18,21 +18,7 @@ function configCallback( req, config ) {
 
 function requestCallback( req, res ) {
 
-	res.writeHead(200, {'Content-Type': 'text/plain'});
-		
-	// Count up to max, printing numbers on a new line one second apart.
-	var max = parseInt( req.url.substring(1), 10 ) || 10;
-	var counter = 1;
-	var interval = setInterval(function() {
-		res.write(counter+'\n');
-		
-		if (counter === max) {
-			clearInterval( interval );
-			res.end('done\n');
-		}
-		counter++;
-
-	}, 1000);
+	// your web server code
 	
 }
 
